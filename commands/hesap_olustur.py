@@ -71,5 +71,5 @@ async def command(event, args):
         logger.error(f"Error creating account: {str(e)}")
         return {
             "prefix": "hesap_olustur",
-            "return": lang_manager.get_text("hesap_olustur.error", error=str(e))
+            "return": lang_manager.get_text("hesap_olustur.error")
         }
