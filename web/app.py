@@ -40,6 +40,12 @@ def create_app():
         mongo.db.command('ping')
         logger.info("Successfully connected to MongoDB!")
         
+        # Log the mongo instance to verify it's not None
+        if mongo.db is None:
+            logger.error("MongoDB instance is None after initialization.")
+        else:
+            logger.info("MongoDB instance is valid.")
+        
         # Check if the 'users' collection exists, if not create it
         if 'users' not in mongo.db.list_collection_names():
             mongo.db.create_collection('users')
