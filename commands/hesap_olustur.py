@@ -32,7 +32,7 @@ async def command(event, args):
         
         # Generate temporary password
         temp_password = secrets.token_urlsafe(8)
-        
+
         # Ensure mongo is initialized
         if mongo is None:
             raise Exception("MongoDB is not initialized.")
