@@ -2,8 +2,15 @@
 Account creation command for the web interface
 """
 import os
+import sys
+import jwt
 from telethon import events
 from loguru import logger
+
+# Add parent directory to path so we can import from web package
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from web.models.user import User
+from web.app import db
 
 async def init(client):
     @client.on(events.NewMessage(pattern=r"!hesap_olustur"))
@@ -18,8 +25,27 @@ async def init(client):
             # Generate temporary password
             temp_password = f"temp_{telegram_id}"
             
+            # Check if user already exists
+            user = User.get_by_telegram_id(telegram_id)
+            if user:
+                await event.reply("❌ Bu Telegram ID için zaten bir hesap mevcut!")
+                return
+            
+            # Create user in database
+            try:
+                user = User.create(
+                    telegram_id=telegram_id,
+                    username=username,
+                    password=temp_password
+                )
+                logger.info(f"Created new user in database: {telegram_id}")
+            except Exception as e:
+                logger.error(f"Database error creating user {telegram_id}: {str(e)}")
+                await event.reply("❌ Hesap oluşturulurken bir hata oluştu. Lütfen daha sonra tekrar deneyin.")
+                return
+            
             # Send credentials to user
-            web_url = os.getenv('WEB_API_URL', 'http://localhost:5000')
+            web_url = os.getenv('WEB_URL', 'http://localhost:5000')
             message = (
                 "🌟 Web Arayüzü Hesabınız Hazır!\n\n"
                 f"🆔 Telegram ID: `{telegram_id}`\n"
