@@ -1,0 +1,78 @@
+help:
+  title: "🤖 Mevcut Komutlar"
+  detail_title: "📖 Detaylı Yardım: {command}"
+  usage_note: "ℹ️ Belirli bir komut hakkında detaylı bilgi için {prefix}help <komut> kullanın."
+  not_found: "❌ {command} komutu bulunamadı."
+  no_help: "❌ {command} için yardım mevcut değil."
+
+sysinfo:
+  title: "🖥️ Sistem Bilgisi"
+  os: "İşletim Sistemi: {os}"
+  machine: "Makine: {machine}"
+  processor: "İşlemci: {processor}"
+  cpu_usage: "CPU Kullanımı: {usage}%"
+  memory_usage: "Bellek Kullanımı: {usage}%"
+  uptime: "Sistem Çalışma Süresi: {uptime}"
+  bot_info: "🤖 Bot Bilgisi"
+  python_version: "Python Sürümü: {version}"
+  platform: "Platform: {platform}"
+
+cmd:
+  specify_action: "❌ Lütfen bir eylem belirtin: list, install veya remove"
+  installed_commands: "📜 Yüklü Komutlar:"
+  invalid_format: "❌ Geçersiz komut dosyası formatı. Komut 'async def command' fonksiyonu içermelidir."
+  install_success: "✅ Komut başarıyla yüklendi: {command}"
+  install_error: "❌ Komut yüklenirken hata oluştu: {error}"
+  remove_success: "✅ Komut başarıyla kaldırıldı: {command}"
+  remove_error: "❌ Komut kaldırılırken hata oluştu: {error}"
+  not_found: "❌ Komut bulunamadı: {command}"
+  invalid_action: "❌ Geçersiz eylem. Kullanım: list, install veya remove"
+  install_no_reply: "❌ !cmd install komutunu bir Python dosyasına yanıt olarak gönderin"
+  install_no_python_file: "❌ Yanıtlanan mesaj bir .py dosyası içermelidir"
+  install_security_check: "⚠️ Güvenlik Kontrolü:\n\nKomut potansiyel olarak güvenli olmayan işlemler içeriyor:\n{warnings}\n\nYüklemeye devam etmek istiyor musunuz? 30 saniye içinde !confirm veya !cancel ile yanıt verin."
+  install_timeout: "❌ Zaman aşımı nedeniyle yükleme iptal edildi"
+  install_cancelled: "❌ Yükleme kullanıcı tarafından iptal edildi"
+  install_confirmed: "✅ Güvenlik kontrolü geçildi, komut yükleniyor..."
+
+lang:
+  current: "🌐 Mevcut dil: {lang}"
+  available: "Mevcut diller:"
+  changed: "✅ Dil değiştirildi: {lang}"
+  not_found: "❌ {lang} dili bulunamadı. Mevcut diller: {available}"
+  usage: "Kullanım: !lang <dil_kodu> veya !lang list"
+
+echo:
+  no_message: "❌ Lütfen tekrarlanacak bir mesaj girin!"
+  description: "Verilen mesajı tekrarlar"
+  usage: "!echo <mesaj>"
+
+ping:
+  response: "Pong! 🏓"
+  description: "Botun yanıt verip vermediğini kontrol eder"
+  usage: "!ping"
+
+commands:
+  help:
+    name: "help"
+    description: "Mevcut komutları ve kullanımlarını gösterir"
+    usage: "!help - Tüm komutları listeler\n!help <komut> - Komut detaylarını gösterir"
+  echo:
+    name: "echo"
+    description: "Verilen mesajı tekrarlar"
+    usage: "!echo <mesaj>"
+  ping:
+    name: "ping"
+    description: "Botun yanıt verip vermediğini kontrol eder"
+    usage: "!ping"
+  sysinfo:
+    name: "sysinfo"
+    description: "Sistem bilgilerini ve bot durumunu gösterir"
+    usage: "!sysinfo"
+  lang:
+    name: "lang"
+    description: "Bot dilini değiştirir veya mevcut dilleri listeler"
+    usage: "!lang - Mevcut dili gösterir\n!lang list - Dilleri listeler\n!lang <kod> - Dili değiştirir"
+  cmd:
+    name: "cmd"
+    description: "Komutları yönetir (listeleme, yükleme, kaldırma)"
+    usage: "!cmd list - Komutları listeler\n!cmd install <url> - Komut yükler\n!cmd remove <isim> - Komut kaldırır"

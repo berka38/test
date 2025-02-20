@@ -1,0 +1,78 @@
+help:
+  title: "🤖 Available Commands"
+  detail_title: "📖 Detailed Help: {command}"
+  usage_note: "ℹ️ Use {prefix}help <command> for detailed information about a specific command."
+  not_found: "❌ Command {command} not found."
+  no_help: "❌ No help available for {command}."
+
+sysinfo:
+  title: "🖥️ System Information"
+  os: "OS: {os}"
+  machine: "Machine: {machine}"
+  processor: "Processor: {processor}"
+  cpu_usage: "CPU Usage: {usage}%"
+  memory_usage: "Memory Usage: {usage}%"
+  uptime: "System Uptime: {uptime}"
+  bot_info: "🤖 Bot Information"
+  python_version: "Python Version: {version}"
+  platform: "Platform: {platform}"
+
+cmd:
+  specify_action: "❌ Please specify an action: list, install, or remove"
+  installed_commands: "📜 Installed Commands:"
+  invalid_format: "❌ Invalid command file format. Command must contain 'async def command' function."
+  install_success: "✅ Successfully installed command: {command}"
+  install_error: "❌ Error installing command: {error}"
+  remove_success: "✅ Successfully removed command: {command}"
+  remove_error: "❌ Error removing command: {error}"
+  not_found: "❌ Command not found: {command}"
+  invalid_action: "❌ Invalid action. Use: list, install, or remove"
+  install_no_reply: "❌ Please reply to a Python file with !cmd install"
+  install_no_python_file: "❌ The replied message must contain a .py file"
+  install_security_check: "⚠️ Security Check:\n\nCommand contains potentially unsafe operations:\n{warnings}\n\nDo you want to proceed with installation? Reply with !confirm or !cancel within 30 seconds."
+  install_timeout: "❌ Installation cancelled due to timeout"
+  install_cancelled: "❌ Installation cancelled by user"
+  install_confirmed: "✅ Security check passed, installing command..."
+
+lang:
+  current: "🌐 Current language: {lang}"
+  available: "Available languages:"
+  changed: "✅ Language changed to: {lang}"
+  not_found: "❌ Language {lang} not found. Available languages: {available}"
+  usage: "Usage: !lang <language_code> or !lang list"
+
+echo:
+  no_message: "❌ Please provide a message to echo!"
+  description: "Repeats the given message"
+  usage: "!echo <message>"
+
+ping:
+  response: "Pong! 🏓"
+  description: "Check if the bot is responsive"
+  usage: "!ping"
+
+commands:
+  help:
+    name: "help"
+    description: "Shows list of available commands and their usage"
+    usage: "!help - Lists all commands\n!help <command> - Shows command details"
+  echo:
+    name: "echo"
+    description: "Repeats the given message"
+    usage: "!echo <message>"
+  ping:
+    name: "ping"
+    description: "Check if the bot is responsive"
+    usage: "!ping"
+  sysinfo:
+    name: "sysinfo"
+    description: "Shows system information and bot status"
+    usage: "!sysinfo"
+  lang:
+    name: "lang"
+    description: "Change bot language or list available languages"
+    usage: "!lang - Show current language\n!lang list - List languages\n!lang <code> - Change language"
+  cmd:
+    name: "cmd"
+    description: "Manage commands (list, install, remove)"
+    usage: "!cmd list - List commands\n!cmd install <url> - Install command\n!cmd remove <name> - Remove command"

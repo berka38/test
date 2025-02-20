@@ -1,0 +1,78 @@
+help:
+  title: "🤖 Comandos Disponibles"
+  detail_title: "📖 Ayuda Detallada: {command}"
+  usage_note: "ℹ️ Use {prefix}help <comando> para información detallada sobre un comando específico."
+  not_found: "❌ Comando {command} no encontrado."
+  no_help: "❌ No hay ayuda disponible para {command}."
+
+sysinfo:
+  title: "🖥️ Información del Sistema"
+  os: "Sistema Operativo: {os}"
+  machine: "Máquina: {machine}"
+  processor: "Procesador: {processor}"
+  cpu_usage: "Uso de CPU: {usage}%"
+  memory_usage: "Uso de Memoria: {usage}%"
+  uptime: "Tiempo de Actividad: {uptime}"
+  bot_info: "🤖 Información del Bot"
+  python_version: "Versión de Python: {version}"
+  platform: "Plataforma: {platform}"
+
+cmd:
+  specify_action: "❌ Por favor especifique una acción: list, install o remove"
+  installed_commands: "📜 Comandos Instalados:"
+  invalid_format: "❌ Formato de archivo de comando inválido. El comando debe contener la función 'async def command'."
+  install_success: "✅ Comando instalado exitosamente: {command}"
+  install_error: "❌ Error al instalar el comando: {error}"
+  remove_success: "✅ Comando eliminado exitosamente: {command}"
+  remove_error: "❌ Error al eliminar el comando: {error}"
+  not_found: "❌ Comando no encontrado: {command}"
+  invalid_action: "❌ Acción inválida. Use: list, install o remove"
+  install_no_reply: "❌ Por favor responda a un archivo Python con !cmd install"
+  install_no_python_file: "❌ El mensaje respondido debe contener un archivo .py"
+  install_security_check: "⚠️ Control de Seguridad:\n\nEl comando contiene operaciones potencialmente inseguras:\n{warnings}\n\n¿Desea continuar con la instalación? Responda con !confirm o !cancel dentro de 30 segundos."
+  install_timeout: "❌ Instalación cancelada por tiempo de espera"
+  install_cancelled: "❌ Instalación cancelada por el usuario"
+  install_confirmed: "✅ Control de seguridad aprobado, instalando comando..."
+
+lang:
+  current: "🌐 Idioma actual: {lang}"
+  available: "Idiomas disponibles:"
+  changed: "✅ Idioma cambiado a: {lang}"
+  not_found: "❌ Idioma {lang} no encontrado. Idiomas disponibles: {available}"
+  usage: "Uso: !lang <código_idioma> o !lang list"
+
+echo:
+  no_message: "❌ ¡Por favor proporciona un mensaje para repetir!"
+  description: "Repite el mensaje proporcionado"
+  usage: "!echo <mensaje>"
+
+ping:
+  response: "Pong! 🏓"
+  description: "Comprueba si el bot está respondiendo"
+  usage: "!ping"
+
+commands:
+  help:
+    name: "help"
+    description: "Muestra la lista de comandos disponibles y su uso"
+    usage: "!help - Lista todos los comandos\n!help <comando> - Muestra detalles del comando"
+  echo:
+    name: "echo"
+    description: "Repite el mensaje proporcionado"
+    usage: "!echo <mensaje>"
+  ping:
+    name: "ping"
+    description: "Comprueba si el bot está respondiendo"
+    usage: "!ping"
+  sysinfo:
+    name: "sysinfo"
+    description: "Muestra información del sistema y estado del bot"
+    usage: "!sysinfo"
+  lang:
+    name: "lang"
+    description: "Cambia el idioma del bot o lista los idiomas disponibles"
+    usage: "!lang - Muestra el idioma actual\n!lang list - Lista los idiomas\n!lang <código> - Cambia el idioma"
+  cmd:
+    name: "cmd"
+    description: "Gestiona los comandos (listar, instalar, eliminar)"
+    usage: "!cmd list - Lista los comandos\n!cmd install <url> - Instala un comando\n!cmd remove <nombre> - Elimina un comando"

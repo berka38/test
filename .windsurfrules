@@ -1,0 +1,45 @@
+# Yazılım Projesi Kurallar Dosyası (Rules)
+
+## 1. Kod Yapısı ve Mimarisi
+- **Katmanlı mimari** kullan (MVC, MVVM vb.).
+- Tüm kod **modüler halinde** olmalı, her dosya belirli bir işleve sahip olmalı.
+- Yeni bir özellik eklenirken var olan kod bozulmamalı. Eski fonksiyonlarla uyumlu olmasına dikkat et.
+- **Tek sorumluluk ilkesi**: Her sınıf veya fonksiyon tek bir işlemi yerine getirmeli.
+
+## 2. Kod Standartları
+- **Kod okunabilir olmalı**, yorum satırları kullan.
+- **Değişken ve fonksiyon isimleri** anlamlı olmalı.
+- **Kod tekrarını önle** (DRY - Don't Repeat Yourself prensibi).
+- **Kod formatlama kurallarına** uy (Python: PEP8, JavaScript: ESLint, Prettier kullan).
+- **Kritik kod bloklarını test etmeden commit yapma**.
+
+## 3. Sürüm Kontrolü (Git Kuralları)
+- **Her özellik için ayrı bir branch aç** ve test etmeden ana dala (main) merge yapma.
+- **Commit mesajları açık ve anlaşılır olmalı** ("Bug fix yapıldı" yerine "Login sayfasında token hatası giderildi" gibi).
+- **PR (Pull Request) açmadan merge yapma**, en az bir kod incelemesi al.
+
+## 4. Test ve Hata Yönetimi
+- Her yeni özellik eklenmeden önce **test senaryoları oluştur**.
+- Otomatik testler (örn: Jest, PyTest) kullan.
+- Kodda try-catch blokları kullan, hata mesajlarını logla.
+- **Hata ayıklama için merkezi bir log sistemi kullan** (Sentry, LogRocket vb.).
+
+## 5. Dokümantasyon ve İletişim
+- **Kod içi yorumlar ekle** ("Bu fonksiyon şu işlemi yapar" gibi).
+- Proje için README dosyası hazırla ve güncel tut.
+- API endpointleri için Swagger/OpenAPI gibi dokümantasyon kullan.
+- Takım çalışmalarında **iletişim kanalı belirle** (Slack, Discord, Trello vb.).
+
+## 6. Performans ve Güvenlik
+- **Gereksiz veritabanı sorgularını önle**, cache mekanizmaları kullan (Redis, Memcached).
+- **Veri girişlerini sanitize et** (SQL Injection, XSS gibi açıklara dikkat et).
+- Kullanıcı yetkilendirme ve kimlik doğrulama sistemlerini düzgün uygula (OAuth, JWT vb.).
+
+## 7. Yedekleme ve Acil Durum Planı
+- **Veritabanını ve kritik dosyaları belirli aralıkla yedekle**.
+- Sunucu çökmesi veya veri kaybı gibi durumlara karşı **acil durum planı hazırla**.
+- **Kod değişikliklerini rollback edebilmek için versiyonlama sistemi kullan**.
+
+---
+Bu kurallara uyarsan proje zamanla büyüdükçe kod kalitesini ve stabilitesini koruyabilirsin. Herhangi bir özelliği eklememizi istersen söyle! 🚀
+
