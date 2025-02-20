@@ -33,6 +33,10 @@ async def command(event, args):
         # Generate temporary password
         temp_password = secrets.token_urlsafe(8)
         
+        # Ensure mongo is initialized
+        if mongo is None:
+            raise Exception("MongoDB is not initialized.")
+
         # Check if the 'users' collection exists, if not create it
         if 'users' not in mongo.db.list_collection_names():
             mongo.db.create_collection('users')
