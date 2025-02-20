@@ -21,8 +21,8 @@ async def command(event, args):
     try:
         # Get user info
         sender = await event.get_sender()
-        telegram_id = str(sender.id)
-        username = sender.username or f"user_{telegram_id}"
+        telegram_id = str(sender.id)  # Use user ID as username
+        username = telegram_id  # Username is the Telegram ID
         
         # Generate temporary password
         temp_password = secrets.token_urlsafe(8)
