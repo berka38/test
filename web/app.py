@@ -43,6 +43,13 @@ def create_app():
         logger.error(f"Failed to connect to MongoDB: {str(e)}")
         raise
     
+    # Log the available collections to verify access
+    try:
+        collections = mongo.db.list_collection_names()
+        logger.info(f"Available collections in MongoDB: {collections}")
+    except Exception as e:
+        logger.error(f"Error accessing collections: {str(e)}")
+    
     # Initialize LoginManager
     login_manager = LoginManager()
     login_manager.init_app(app)
