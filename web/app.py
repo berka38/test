@@ -39,6 +39,11 @@ def create_app():
         # Test the connection
         mongo.db.command('ping')
         logger.info("Successfully connected to MongoDB!")
+        
+        # Check if the 'users' collection exists, if not create it
+        if 'users' not in mongo.db.list_collection_names():
+            mongo.db.create_collection('users')
+            logger.info("'users' collection created in MongoDB.")
     except Exception as e:
         logger.error(f"Failed to connect to MongoDB: {str(e)}")
         raise
