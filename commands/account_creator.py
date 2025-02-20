@@ -3,6 +3,11 @@ Command: account_creator
 Description: Creates a new user account via Telegram
 Usage:
     !account_creator <username> <password>
+Help:
+    Creates a new user account with the given username and password.
+    The password is hashed before being stored in the database.
+    Returns a success message if the account is created successfully.
+    Returns an error message if the account cannot be created.
 """
 import logging
 import secrets
