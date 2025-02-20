@@ -86,6 +86,7 @@ def main():
                     for filename in os.listdir(self.commands_dir):
                         if filename.endswith('.py') and not filename.startswith('_'):
                             module_name = filename[:-3]
+                            logger.info(f"Attempting to load command: {module_name}")  # Log command loading attempt
                             try:
                                 # Remove the module if it's already loaded
                                 if module_name in sys.modules:
@@ -96,14 +97,14 @@ def main():
 
                                 if hasattr(module, 'command'):
                                     self.commands[module_name] = module.command
-                                    logger.info(f"Loaded command: {module_name}")
+                                    logger.info(f"Successfully loaded command: {module_name}")
                                 else:
-                                    logger.warning(f"Module {module_name} has no command function")
+                                    logger.warning(f"Module {module_name} does not have a command function")
                             except Exception as e:
                                 logger.error(f"Failed to load command {module_name}: {str(e)}")
 
                     # Log the loaded commands
-                    logger.info(f"Available commands: {list(self.commands.keys())}")
+                    logger.info(f"Available commands after loading: {list(self.commands.keys())}")
                 except Exception as e:
                     logger.error(f"Error in load_commands: {str(e)}\n{traceback.format_exc()}")
             
