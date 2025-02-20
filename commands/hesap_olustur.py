@@ -5,16 +5,17 @@ Usage:
     !hesap_olustur - Web arayüzü için yeni bir hesap oluşturur
 """
 import os
-import sqlite3
-import hashlib
+import sys
 import secrets
 import logging
+from werkzeug.security import generate_password_hash
+from datetime import datetime
+
+# Add parent directory to path so we can import from web package
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from web.app import mongo
 
 logger = logging.getLogger('hesap_olustur')
-
-def hash_password(password):
-    """Hash a password using SHA-256"""
-    return hashlib.sha256(password.encode()).hexdigest()
 
 async def command(event, args):
     try:
@@ -25,40 +26,33 @@ async def command(event, args):
         
         # Generate temporary password
         temp_password = secrets.token_urlsafe(8)
-        hashed_password = hash_password(temp_password)
-        
-        # Connect to SQLite database
-        db_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'web.db')
-        conn = sqlite3.connect(db_path)
-        cursor = conn.cursor()
+        hashed_password = generate_password_hash(temp_password)
         
         try:
-            # Create users table if not exists
-            cursor.execute('''
-            CREATE TABLE IF NOT EXISTS users (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                telegram_id TEXT UNIQUE NOT NULL,
-                username TEXT NOT NULL,
-                password TEXT NOT NULL,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-            ''')
-            
             # Check if user exists
-            cursor.execute('SELECT telegram_id FROM users WHERE telegram_id = ?', (telegram_id,))
-            if cursor.fetchone():
+            existing_user = mongo.db.users.find_one({"telegram_id": telegram_id})
+            if existing_user:
                 return {
                     "prefix": "hesap_olustur",
                     "return": "❌ Bu Telegram ID için zaten bir hesap mevcut!"
                 }
             
-            # Insert new user
-            cursor.execute(
-                'INSERT INTO users (telegram_id, username, password) VALUES (?, ?, ?)',
-                (telegram_id, username, hashed_password)
-            )
-            conn.commit()
-            logger.info(f"Created new user in database: {telegram_id}")
+            # Create user document
+            user_data = {
+                "telegram_id": telegram_id,
+                "username": username,
+                "password": hashed_password,
+                "is_active": True,
+                "created_at": datetime.utcnow(),
+                "last_login": None
+            }
+            
+            # Insert into MongoDB
+            result = mongo.db.users.insert_one(user_data)
+            if not result.inserted_id:
+                raise Exception("Failed to create user in database")
+                
+            logger.info(f"Created new user in MongoDB: {telegram_id}")
             
         except Exception as e:
             logger.error(f"Database error creating user {telegram_id}: {str(e)}")
@@ -66,8 +60,6 @@ async def command(event, args):
                 "prefix": "hesap_olustur",
                 "return": "❌ Hesap oluşturulurken bir hata oluştu. Lütfen daha sonra tekrar deneyin."
             }
-        finally:
-            conn.close()
         
         # Send credentials to user
         web_url = os.getenv('WEB_URL', 'http://localhost:5000')
