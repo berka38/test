@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Telegram UserBot Yönetim{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <!-- Stats Overview -->
+    <div class="col-span-1 md:col-span-3">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+            <h2 class="text-2xl font-bold mb-4">Hoş Geldin, {{ current_user.username }}!</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-blue-100 dark:bg-blue-900 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold text-blue-800 dark:text-blue-200">Aktif Komutlar</h3>
+                    <p class="text-3xl font-bold text-blue-600 dark:text-blue-300">
+                        {{ commands|selectattr('is_active', 'true')|list|length }}
+                    </p>
+                </div>
+                <div class="bg-green-100 dark:bg-green-900 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold text-green-800 dark:text-green-200">Toplam Komut</h3>
+                    <p class="text-3xl font-bold text-green-600 dark:text-green-300">
+                        {{ commands|length }}
+                    </p>
+                </div>
+                <div class="bg-purple-100 dark:bg-purple-900 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold text-purple-800 dark:text-purple-200">Son Giriş</h3>
+                    <p class="text-lg font-bold text-purple-600 dark:text-purple-300">
+                        {{ current_user.last_login.strftime('%d.%m.%Y %H:%M') }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Command List -->
+    <div class="col-span-1 md:col-span-2">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold">Komutlarım</h2>
+                <button id="newCommandBtn" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
+                    <i class="fas fa-plus mr-2"></i>Yeni Komut
+                </button>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full">
+                    <thead>
+                        <tr class="border-b dark:border-gray-700">
+                            <th class="text-left py-3">Komut</th>
+                            <th class="text-left py-3">Açıklama</th>
+                            <th class="text-center py-3">Durum</th>
+                            <th class="text-right py-3">İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for command in commands %}
+                        <tr class="border-b dark:border-gray-700">
+                            <td class="py-3">{{ command.name }}</td>
+                            <td class="py-3">{{ command.description }}</td>
+                            <td class="py-3 text-center">
+                                <div class="relative inline-block w-10 mr-2 align-middle select-none">
+                                    <input type="checkbox" 
+                                           id="toggle-{{ command.id }}" 
+                                           class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"
+                                           {% if command.is_active %}checked{% endif %}
+                                           data-command-id="{{ command.id }}">
+                                    <label for="toggle-{{ command.id }}" 
+                                           class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                                </div>
+                            </td>
+                            <td class="py-3 text-right">
+                                <button class="text-blue-500 hover:text-blue-600 mr-2" onclick="editCommand({{ command.id }})">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="text-red-500 hover:text-red-600" onclick="deleteCommand({{ command.id }})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="col-span-1">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-6">
+            <h2 class="text-xl font-bold mb-4">Hızlı İşlemler</h2>
+            <div class="space-y-4">
+                <button class="w-full bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">
+                    <i class="fas fa-sync-alt mr-2"></i>Komutları Yenile
+                </button>
+                <button class="w-full bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded">
+                    <i class="fas fa-store mr-2"></i>Komut Mağazası
+                </button>
+                <button class="w-full bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded">
+                    <i class="fas fa-cog mr-2"></i>Ayarlar
+                </button>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+            <h2 class="text-xl font-bold mb-4">Bot Durumu</h2>
+            <div class="space-y-2">
+                <div class="flex justify-between items-center">
+                    <span>Çalışma Süresi:</span>
+                    <span class="font-semibold">3 gün 12 saat</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span>CPU Kullanımı:</span>
+                    <span class="font-semibold">23%</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span>RAM Kullanımı:</span>
+                    <span class="font-semibold">156 MB</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .toggle-checkbox:checked {
+        right: 0;
+        border-color: #68D391;
+    }
+    .toggle-checkbox:checked + .toggle-label {
+        background-color: #68D391;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Toggle command status
+    document.querySelectorAll('.toggle-checkbox').forEach(checkbox => {
+        checkbox.addEventListener('change', async function() {
+            const commandId = this.dataset.commandId;
+            try {
+                const response = await fetch(`/api/commands/${commandId}/toggle`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.message);
+                }
+                // Update UI based on response
+                this.checked = data.is_active;
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Komut durumu güncellenirken bir hata oluştu.');
+                // Revert the checkbox state
+                this.checked = !this.checked;
+            }
+        });
+    });
+});
+
+function editCommand(commandId) {
+    // Implement edit command functionality
+    console.log('Edit command:', commandId);
+}
+
+function deleteCommand(commandId) {
+    if (confirm('Bu komutu silmek istediğinizden emin misiniz?')) {
+        // Implement delete command functionality
+        console.log('Delete command:', commandId);
+    }
+}
+</script>
+{% endblock %}
