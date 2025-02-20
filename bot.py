@@ -7,6 +7,19 @@ from telethon.sessions import StringSession
 from dotenv import load_dotenv
 from loguru import logger
 from utils.language import get_lang_manager
+from flask import Flask
+import threading
+
+# Initialize Flask app
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return 'Telegram UserBot is running!'
+
+def run_flask():
+    port = int(os.environ.get("PORT", 8080))
+    app.run(host='0.0.0.0', port=port)
 
 def main():
     try:
@@ -135,14 +148,19 @@ def main():
                 logger.info("Userbot is running...")
                 await self.client.run_until_disconnected()
 
-        # Create and start the bot
+        # Start Flask server in a separate thread
+        flask_thread = threading.Thread(target=run_flask)
+        flask_thread.daemon = True
+        flask_thread.start()
+        
+        # Start the bot
+        logger.info("Starting Telegram UserBot...")
         bot = UserBot()
         bot.client.loop.run_until_complete(bot.start())
 
     except Exception as e:
-        error_msg = f"Error: {str(e)}\n\nFull traceback:\n{traceback.format_exc()}"
-        print(error_msg)
-        logger.error(error_msg)
+        logger.error(f"Error in main: {str(e)}\n{traceback.format_exc()}")
+        sys.exit(1)
 
 if __name__ == '__main__':
     main()
