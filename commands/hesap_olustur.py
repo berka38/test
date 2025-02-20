@@ -9,11 +9,11 @@ import sys
 import secrets
 import logging
 from werkzeug.security import generate_password_hash
-from datetime import datetime
 
 # Add parent directory to path so we can import from web package
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from web.app import mongo
+from web.services.auth import AuthService
 
 logger = logging.getLogger('hesap_olustur')
 
@@ -26,33 +26,21 @@ async def command(event, args):
         
         # Generate temporary password
         temp_password = secrets.token_urlsafe(8)
-        hashed_password = generate_password_hash(temp_password)
+        
+        # Initialize auth service
+        auth_service = AuthService(mongo.db)
         
         try:
             # Check if user exists
-            existing_user = mongo.db.users.find_one({"telegram_id": telegram_id})
-            if existing_user:
-                return {
-                    "prefix": "hesap_olustur",
-                    "return": "❌ Bu Telegram ID için zaten bir hesap mevcut!"
-                }
-            
-            # Create user document
-            user_data = {
-                "telegram_id": telegram_id,
-                "username": username,
-                "password": hashed_password,
-                "is_active": True,
-                "created_at": datetime.utcnow(),
-                "last_login": None
-            }
-            
-            # Insert into MongoDB
-            result = mongo.db.users.insert_one(user_data)
-            if not result.inserted_id:
-                raise Exception("Failed to create user in database")
-                
-            logger.info(f"Created new user in MongoDB: {telegram_id}")
+            user = auth_service.get_or_create_user(telegram_id, username)
+            if user:
+                # Set initial password
+                if auth_service.set_user_password(telegram_id, temp_password):
+                    logger.info(f"Created/updated user in MongoDB: {telegram_id}")
+                else:
+                    raise Exception("Failed to set user password")
+            else:
+                raise Exception("Failed to create user")
             
         except Exception as e:
             logger.error(f"Database error creating user {telegram_id}: {str(e)}")
