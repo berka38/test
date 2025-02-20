@@ -12,8 +12,8 @@ from werkzeug.security import generate_password_hash
 
 # Add parent directory to path so we can import from web package
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from web.app import mongo
-from web.services.auth import AuthService
+from ..app import mongo
+from ..services.auth import AuthService
 
 logger = logging.getLogger('hesap_olustur')
 
