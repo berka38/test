@@ -32,6 +32,11 @@ async def command(event, args):
         # Generate temporary password
         temp_password = secrets.token_urlsafe(8)
         
+        # Check if the 'users' collection exists, if not create it
+        if 'users' not in mongo.db.list_collection_names():
+            mongo.db.create_collection('users')
+            logger.info("'users' collection created in MongoDB.")
+
         # Initialize auth service
         auth_service = AuthService(mongo.db)
         
