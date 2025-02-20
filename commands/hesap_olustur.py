@@ -8,7 +8,6 @@ import os
 import sys
 import secrets
 import logging
-from utils.language import get_lang_manager
 from werkzeug.security import generate_password_hash
 
 # Import from the web package using absolute imports
@@ -25,8 +24,6 @@ async def command(event, args):
         !hesap_olustur - Yeni bir hesap oluşturur.
     """
     try:
-        lang_manager = get_lang_manager()
-        
         # Get user info
         sender = await event.get_sender()
         telegram_id = str(sender.id)  # Use user ID as username
@@ -71,5 +68,5 @@ async def command(event, args):
         logger.error(f"Error creating account: {str(e)}")
         return {
             "prefix": "hesap_olustur",
-            "return": lang_manager.get_text("hesap_olustur.error")
+            "return": f"❌ Hesap oluşturulurken bir hata oluştu: {str(e)}"
         }
