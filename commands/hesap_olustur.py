@@ -2,15 +2,15 @@
 Account creation command for the web interface
 """
 import os
-import sys
-import jwt
 from telethon import events
 from loguru import logger
+import sqlite3
+import hashlib
+import secrets
 
-# Add parent directory to path so we can import from web package
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from web.models.user import User
-from web.app import db
+def hash_password(password):
+    """Hash a password using SHA-256"""
+    return hashlib.sha256(password.encode()).hexdigest()
 
 async def init(client):
     @client.on(events.NewMessage(pattern=r"!hesap_olustur"))
@@ -23,26 +23,46 @@ async def init(client):
             username = sender.username or f"user_{telegram_id}"
             
             # Generate temporary password
-            temp_password = f"temp_{telegram_id}"
+            temp_password = secrets.token_urlsafe(8)
+            hashed_password = hash_password(temp_password)
             
-            # Check if user already exists
-            user = User.get_by_telegram_id(telegram_id)
-            if user:
-                await event.reply("❌ Bu Telegram ID için zaten bir hesap mevcut!")
-                return
+            # Connect to SQLite database
+            db_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'web.db')
+            conn = sqlite3.connect(db_path)
+            cursor = conn.cursor()
             
-            # Create user in database
             try:
-                user = User.create(
-                    telegram_id=telegram_id,
-                    username=username,
-                    password=temp_password
+                # Create users table if not exists
+                cursor.execute('''
+                CREATE TABLE IF NOT EXISTS users (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    telegram_id TEXT UNIQUE NOT NULL,
+                    username TEXT NOT NULL,
+                    password TEXT NOT NULL,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
+                ''')
+                
+                # Check if user exists
+                cursor.execute('SELECT telegram_id FROM users WHERE telegram_id = ?', (telegram_id,))
+                if cursor.fetchone():
+                    await event.reply("❌ Bu Telegram ID için zaten bir hesap mevcut!")
+                    return
+                
+                # Insert new user
+                cursor.execute(
+                    'INSERT INTO users (telegram_id, username, password) VALUES (?, ?, ?)',
+                    (telegram_id, username, hashed_password)
+                )
+                conn.commit()
                 logger.info(f"Created new user in database: {telegram_id}")
+                
             except Exception as e:
                 logger.error(f"Database error creating user {telegram_id}: {str(e)}")
                 await event.reply("❌ Hesap oluşturulurken bir hata oluştu. Lütfen daha sonra tekrar deneyin.")
                 return
+            finally:
+                conn.close()
             
             # Send credentials to user
             web_url = os.getenv('WEB_URL', 'http://localhost:5000')
