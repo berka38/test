@@ -19,6 +19,12 @@ from ..services.auth import AuthService
 logger = logging.getLogger('hesap_olustur')
 
 async def command(event, args):
+    """
+    Command: hesap_olustur
+    Description: Telegram kullanıcıları için yeni bir hesap oluşturur.
+    Usage:
+        !hesap_olustur - Yeni bir hesap oluşturur.
+    """
     try:
         lang_manager = get_lang_manager()
         
