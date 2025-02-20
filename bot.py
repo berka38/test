@@ -71,17 +71,17 @@ def main():
                 try:
                     if not os.path.exists(self.commands_dir):
                         os.makedirs(self.commands_dir)
-                        
+
                     # Clear existing commands
                     self.commands = {}
-                    
+
                     # Remove commands_dir from sys.path if it exists
                     if self.commands_dir in sys.path:
                         sys.path.remove(self.commands_dir)
-                    
+
                     # Add commands_dir to sys.path
                     sys.path.insert(0, self.commands_dir)
-                    
+
                     # Load each command
                     for filename in os.listdir(self.commands_dir):
                         if filename.endswith('.py') and not filename.startswith('_'):
@@ -90,17 +90,20 @@ def main():
                                 # Remove the module if it's already loaded
                                 if module_name in sys.modules:
                                     del sys.modules[module_name]
-                                
+
                                 # Import the module
                                 module = importlib.import_module(module_name)
-                                
+
                                 if hasattr(module, 'command'):
                                     self.commands[module_name] = module.command
                                     logger.info(f"Loaded command: {module_name}")
                                 else:
                                     logger.warning(f"Module {module_name} has no command function")
                             except Exception as e:
-                                logger.error(f"Failed to load command {module_name}: {str(e)}\n{traceback.format_exc()}")
+                                logger.error(f"Failed to load command {module_name}: {str(e)}")
+
+                    # Log the loaded commands
+                    logger.info(f"Available commands: {list(self.commands.keys())}")
                 except Exception as e:
                     logger.error(f"Error in load_commands: {str(e)}\n{traceback.format_exc()}")
             
