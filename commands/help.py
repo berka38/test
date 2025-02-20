@@ -1,7 +1,10 @@
 import os
 import importlib
 import inspect
+import logging
 from utils.language import get_lang_manager
+
+logger = logging.getLogger('help')
 
 def parse_docstring(doc):
     """Parse command docstring to extract name, description and usage."""
@@ -48,6 +51,7 @@ async def command(event, args):
         for filename in os.listdir(commands_dir):
             if filename.endswith('.py') and not filename.startswith('_'):
                 module_name = filename[:-3]
+                logger.info(f"Checking command: {module_name}")  # Log command check
                 try:
                     if is_builtin_command(module_name):
                         # Use translations for built-in commands
@@ -64,8 +68,11 @@ async def command(event, args):
                                 commands.append(f"• `{prefix}{name}` - {desc}")
                             else:
                                 commands.append(f"• `{prefix}{module_name}` - No description available")
+                            logger.info(f"Loaded command: {module_name}")
+                        else:
+                            logger.warning(f"Module {module_name} has no command function")
                 except Exception as e:
-                    continue
+                    logger.error(f"Failed to load command {module_name}: {str(e)}")
         
         help_text = lang_manager.get_text("help.title") + "\n\n"
         help_text += '\n'.join(sorted(commands))
@@ -109,6 +116,7 @@ async def command(event, args):
                 "return": help_text
             }
         except Exception as e:
+            logger.error(f"Failed to load command {command_name}: {str(e)}")
             return {
                 "prefix": "help",
                 "return": lang_manager.get_text("help.not_found", command=command_name)

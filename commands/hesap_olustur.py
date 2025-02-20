@@ -8,6 +8,7 @@ import os
 import sys
 import secrets
 import logging
+from utils.language import get_lang_manager
 from werkzeug.security import generate_password_hash
 
 # Add parent directory to path so we can import from web package
@@ -19,6 +20,8 @@ logger = logging.getLogger('hesap_olustur')
 
 async def command(event, args):
     try:
+        lang_manager = get_lang_manager()
+        
         # Get user info
         sender = await event.get_sender()
         telegram_id = str(sender.id)  # Use user ID as username
@@ -30,24 +33,16 @@ async def command(event, args):
         # Initialize auth service
         auth_service = AuthService(mongo.db)
         
-        try:
-            # Check if user exists
-            user = auth_service.get_or_create_user(telegram_id, username)
-            if user:
-                # Set initial password
-                if auth_service.set_user_password(telegram_id, temp_password):
-                    logger.info(f"Created/updated user in MongoDB: {telegram_id}")
-                else:
-                    raise Exception("Failed to set user password")
+        # Check if user exists
+        user = auth_service.get_or_create_user(telegram_id, username)
+        if user:
+            # Set initial password
+            if auth_service.set_user_password(telegram_id, temp_password):
+                logger.info(f"Created/updated user in MongoDB: {telegram_id}")
             else:
-                raise Exception("Failed to create user")
-            
-        except Exception as e:
-            logger.error(f"Database error creating user {telegram_id}: {str(e)}")
-            return {
-                "prefix": "hesap_olustur",
-                "return": "❌ Hesap oluşturulurken bir hata oluştu. Lütfen daha sonra tekrar deneyin."
-            }
+                raise Exception("Failed to set user password")
+        else:
+            raise Exception("Failed to create user")
         
         # Send credentials to user
         web_url = os.getenv('WEB_URL', 'http://localhost:5000')
@@ -68,9 +63,8 @@ async def command(event, args):
         }
 
     except Exception as e:
-        error_msg = f"❌ Hesap oluşturma hatası: {str(e)}"
-        logger.error(error_msg)
+        logger.error(f"Error creating account: {str(e)}")
         return {
             "prefix": "hesap_olustur",
-            "return": error_msg
+            "return": lang_manager.get_text("hesap_olustur.error", error=str(e))
         }
